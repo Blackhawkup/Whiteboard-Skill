@@ -1,0 +1,94 @@
+[
+ {
+  "name": "key",
+  "w": 620,
+  "colour": "problem",
+  "fill_part": "the round handle of the key",
+  "subject": "One large old-fashioned door key lying horizontally, with a big round ring handle on the left and a simple shaft with two square teeth pointing down at the right end, side view, nothing else"
+ },
+ {
+  "name": "key_copy",
+  "w": 340,
+  "colour": "problem",
+  "from": "key"
+ },
+ {
+  "name": "house",
+  "w": 350,
+  "colour": "highlight",
+  "fill_part": "the roof",
+  "subject": "A small simple house, front view, with a pitched roof, one big front door with a round doorknob and one small window, standing alone"
+ },
+ {
+  "name": "car",
+  "w": 380,
+  "colour": "amber",
+  "fill_part": "the car body",
+  "subject": "A small simple car seen exactly from the side, facing right, with two wheels and one side door with a door handle, standing alone"
+ },
+ {
+  "name": "bank",
+  "w": 350,
+  "colour": "green",
+  "fill_part": "the triangular roof",
+  "subject": "A small classical bank building, front view, with a triangular roof, exactly four plain columns and one big central door, standing alone, with no text or symbols on it"
+ },
+ {
+  "name": "gym",
+  "w": 470,
+  "subject": "A small flat-roofed gym building, front view, with a wide glass front door, and one big dumbbell standing on the roof as a sign, no text"
+ },
+ {
+  "name": "thief",
+  "w": 380,
+  "colour": "problem",
+  "fill_part": "the key",
+  "subject": "A friendly cartoon burglar, full body, standing, three-quarter view facing left, wearing a beanie hat, a small black eye mask and a horizontally striped long-sleeved shirt, one arm raised high holding up a big door key, sneaky grin"
+ },
+ {
+  "name": "safe",
+  "w": 460,
+  "colour": "solution",
+  "fill_part": "the square door panel of the safe",
+  "subject": "A big square bank safe, front view, on short legs, closed heavy door with one big round combination dial in the centre of the door and one simple lever handle to the right of the dial"
+ },
+ {
+  "name": "key_round",
+  "w": 230,
+  "colour": "highlight",
+  "fill_part": "the key handle",
+  "subject": "One door key at a 45 degree angle, with a big solid round handle at the upper left and the teeth at the lower right, nothing else"
+ },
+ {
+  "name": "key_square",
+  "w": 230,
+  "colour": "amber",
+  "fill_part": "the key handle",
+  "subject": "One door key at a 45 degree angle, with a big solid square handle at the upper left and the teeth at the lower right, nothing else"
+ },
+ {
+  "name": "key_star",
+  "w": 230,
+  "colour": "green",
+  "fill_part": "the key handle",
+  "subject": "One door key at a 45 degree angle, with a big solid five-pointed star handle at the upper left and the teeth at the lower right, nothing else"
+ },
+ {
+  "name": "house2",
+  "w": 270,
+  "colour": "highlight",
+  "from": "house"
+ },
+ {
+  "name": "car2",
+  "w": 320,
+  "colour": "amber",
+  "from": "car"
+ },
+ {
+  "name": "bank2",
+  "w": 270,
+  "colour": "green",
+  "from": "bank"
+ }
+]

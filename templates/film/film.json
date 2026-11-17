@@ -1,0 +1,21 @@
+{
+  "slug": "",
+  "title": "",
+  "format": "16:9",
+  "language": "en",
+  "board": "#F7F3ED",
+  "palette": {
+    "ink": "#111111",
+    "problem": "#FF4D6D",
+    "solution": "#6B2BD9",
+    "highlight": "#00E5FF"
+  },
+  "font": { "family": "Geist" },
+  "style_words": "in bold black marker",
+  "art_mode": "line",
+  "line_weight": 8.5,
+  "pen_speed": 2600,
+  "voice": { "engine": "gemini", "name": "Charon", "style": "" },
+  "music": "composed",
+  "pacing": { "lead": 0.8, "tail": 3.0, "pauses": [] }
+}

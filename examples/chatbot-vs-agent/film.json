@@ -1,0 +1,82 @@
+{
+  "slug": "chatbot-vs-agent",
+  "title": "Chatbot vs AI agent",
+  "format": "16:9",
+  "language": "en",
+  "board": "#F7F3ED",
+  "palette": {
+    "ink": "#111111",
+    "problem": "#FF4D6D",
+    "solution": "#6B2BD9",
+    "highlight": "#00E5FF"
+  },
+  "font": {
+    "family": "Geist"
+  },
+  "style_words": "in bold black marker",
+  "art_mode": "line",
+  "line_weight": 8.5,
+  "pen_speed": 2600,
+  "voice": {
+    "engine": "gemini",
+    "name": "Charon",
+    "style": "warm, confident, conversational YouTube explainer narrator"
+  },
+  "music": "composed",
+  "pacing": {
+    "lead": 1.6,
+    "tail": 3.5,
+    "pauses": [
+      {
+        "after": "broke down",
+        "sec": 1.0
+      },
+      {
+        "after": "what to do",
+        "n": 1,
+        "sec": 0.5
+      },
+      {
+        "after": "a list",
+        "sec": 0.2
+      },
+      {
+        "after": "ride home",
+        "sec": 0.2
+      },
+      {
+        "after": "all of it",
+        "sec": 0.45
+      },
+      {
+        "after": "AI agent",
+        "sec": 0.55
+      },
+      {
+        "after": "the garage",
+        "sec": 0.45
+      },
+      {
+        "after": "the repair",
+        "sec": 0.45
+      },
+      {
+        "after": "your ride",
+        "sec": 0.45
+      },
+      {
+        "after": "your calendar",
+        "sec": 1.3
+      },
+      {
+        "after": "go home",
+        "sec": 1.6
+      },
+      {
+        "after": "what to do",
+        "n": 2,
+        "sec": 0.25
+      }
+    ]
+  }
+}

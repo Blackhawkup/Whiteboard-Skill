@@ -1,0 +1,38 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Model caches and temporary blobs
+*.incomplete
+*.lock
+.locks/
+tools/models/
+models/
+
+# Film build & output artifacts
+build/
+out/
+dist/
+node_modules/
+
+# Whiteboard workspace & virtual environment (generated during wb setup)
+.tools/
+venv/
+.venv/
+env/
+.env
+
+# Operating system files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# IDE & Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log

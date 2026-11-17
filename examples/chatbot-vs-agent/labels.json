@@ -1,0 +1,13 @@
+[
+  {"id": "chatbot", "text": "CHATBOT", "size": 54, "weight": 800, "colour": "ink"},
+  {"id": "agent", "text": "AI AGENT", "size": 64, "weight": 800, "colour": "solution"},
+  {"id": "l1", "text": "Call a garage", "size": 46, "weight": 600, "colour": "ink"},
+  {"id": "l2", "text": "Book a repair", "size": 46, "weight": 600, "colour": "ink"},
+  {"id": "l3", "text": "Find a ride home", "size": 46, "weight": 600, "colour": "ink"},
+  {"id": "n1", "text": "1", "size": 52, "weight": 900, "colour": "problem"},
+  {"id": "n2", "text": "2", "size": 52, "weight": 900, "colour": "problem"},
+  {"id": "n3", "text": "3", "size": 52, "weight": 900, "colour": "problem"},
+  {"id": "allonyou", "text": "ALL ON YOU", "size": 92, "weight": 900, "colour": "problem"},
+  {"id": "tells", "text": "TELLS.", "size": 250, "weight": 900, "colour": "problem"},
+  {"id": "does", "text": "DOES.", "size": 250, "weight": 900, "colour": "solution"}
+]

@@ -1,0 +1,74 @@
+{
+  "slug": "one-key",
+  "title": "One key, every door",
+  "format": "9:16",
+  "language": "en",
+  "board": "#F7F3ED",
+  "palette": {
+    "ink": "#111111",
+    "problem": "#FF4D6D",
+    "solution": "#6B2BD9",
+    "highlight": "#00E5FF",
+    "amber": "#FFB020",
+    "green": "#1FBF75"
+  },
+  "font": {
+    "family": "Geist"
+  },
+  "style_words": "in bold black marker",
+  "art_mode": "line",
+  "line_weight": 8.5,
+  "pen_speed": 2600,
+  "voice": {
+    "engine": "gemini",
+    "name": "Puck",
+    "style": "upbeat, conversational explainer, short pauses between sentences"
+  },
+  "music": "composed",
+  "pacing": {
+    "lead": 0.8,
+    "tail": 4.0,
+    "pauses": [
+      {
+        "after": "your house",
+        "n": 1,
+        "sec": 0.45
+      },
+      {
+        "after": "your car",
+        "n": 1,
+        "sec": 0.45
+      },
+      {
+        "after": "your bank",
+        "n": 1,
+        "sec": 0.3
+      },
+      {
+        "after": "the gym",
+        "sec": 0.4
+      },
+      {
+        "after": "your key",
+        "sec": 0.6
+      },
+      {
+        "after": "a safe",
+        "sec": 1.6
+      },
+      {
+        "after": "them inside",
+        "sec": 0.5
+      },
+      {
+        "after": "one code",
+        "sec": 0.3
+      },
+      {
+        "after": "one door",
+        "n": 1,
+        "sec": 0.45
+      }
+    ]
+  }
+}

@@ -1,0 +1,72 @@
+[
+ {
+  "id": "open1",
+  "text": "OPEN",
+  "size": 96,
+  "weight": 900,
+  "colour": "problem"
+ },
+ {
+  "id": "open2",
+  "text": "OPEN",
+  "size": 96,
+  "weight": 900,
+  "colour": "problem"
+ },
+ {
+  "id": "open3",
+  "text": "OPEN",
+  "size": 96,
+  "weight": 900,
+  "colour": "problem"
+ },
+ {
+  "id": "onepw",
+  "text": "ONE PASSWORD",
+  "size": 112,
+  "weight": 800,
+  "colour": "problem"
+ },
+ {
+  "id": "pm",
+  "text": "PASSWORD MANAGER",
+  "size": 96,
+  "weight": 800,
+  "colour": "solution"
+ },
+ {
+  "id": "onecode",
+  "text": "ONE CODE",
+  "size": 92,
+  "weight": 800,
+  "colour": "solution"
+ },
+ {
+  "id": "every",
+  "text": "EVERY",
+  "size": 170,
+  "weight": 900,
+  "colour": "problem"
+ },
+ {
+  "id": "door1",
+  "text": "DOOR.",
+  "size": 170,
+  "weight": 900,
+  "colour": "problem"
+ },
+ {
+  "id": "one",
+  "text": "ONE",
+  "size": 170,
+  "weight": 900,
+  "colour": "solution"
+ },
+ {
+  "id": "door2",
+  "text": "DOOR.",
+  "size": 170,
+  "weight": 900,
+  "colour": "solution"
+ }
+]

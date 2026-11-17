@@ -1,0 +1,12 @@
+[
+  {"name": "car", "w": 640, "colour": "problem", "fill_part": "the car body", "subject": "A small hatchback car seen from the side, facing right, broken down, with its front hood popped open and a big cloud of smoke puffing out of the engine"},
+  {"name": "person_stressed", "w": 270, "colour": "highlight", "fill_part": "the t-shirt", "subject": "A friendly cartoon adult standing upright, full body, front view, one hand on their head in stress, worried expression, wearing a simple t-shirt and trousers"},
+  {"name": "phone_bubble", "w": 800, "flip": true, "start": "right", "subject": "A smartphone standing upright on the left, front view, with a large empty rounded speech bubble coming out of the right side of its screen; the speech bubble is about twice as tall as the phone and completely empty inside"},
+  {"name": "phone_agent", "w": 300, "colour": "solution", "fill_part": "the sparkle star", "subject": "A smartphone standing upright, front view, with a big four-pointed sparkle star on its screen and short motion lines radiating around the phone, as if it is busy working"},
+  {"name": "garage", "w": 340, "colour": "solution", "fill_part": "the roof", "subject": "A small car repair garage building, front view, with a wide open roll-up door and a big wrench symbol on a sign above the door"},
+  {"name": "clipboard", "w": 300, "colour": "highlight", "fill_part": "the wrench", "subject": "A clipboard with a booking form and a big tick checkmark on it, with a spanner wrench lying diagonally across the bottom corner of the clipboard"},
+  {"name": "taxi", "w": 380, "colour": "highlight", "fill_part": "the car body", "subject": "A taxi car seen from the side, driving to the right, with a blank taxi light on its roof without any letters"},
+  {"name": "calendar", "w": 290, "colour": "solution", "fill_part": "the header strip at the top", "subject": "A wall calendar page with a grid of empty square day boxes, two rings at the top, and one day box circled boldly, no numbers"},
+  {"name": "house", "w": 400, "colour": "solution", "fill_part": "the roof", "subject": "A cozy small house, front view, with a pitched roof, a chimney, a front door and two windows"},
+  {"name": "person_relaxed", "w": 380, "colour": "highlight", "fill_part": "the t-shirt", "subject": "The same friendly cartoon adult, now relaxing in a comfy armchair, full body, three-quarter view, leaning back with a big smile and holding a mug of coffee"}
+]
