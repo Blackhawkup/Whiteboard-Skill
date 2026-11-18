@@ -8,11 +8,19 @@ The free narration voices need a free key. Walk the user through it. They must n
 
 1. Go to [AI Studio](https://aistudio.google.com) and click the key icon at the lower left (Get API key).
 2. Click **Create API key**, name it, select **New project**, then **Create key**, and copy it.
-3. Open Flow Studio in the browser (it runs locally; `flow_status` gives its address, usually http://127.0.0.1:8787). Go to the **Voice** tab, paste the key in the Google AI Studio key field, and save.
+3. Open Flow Studio in the browser (it runs locally; `flow_status` gives its address, usually http://127.0.0.1:8787). Go to the **Voice** tab, paste the key into the Google AI Studio key field, and save.
+   *(You can paste multiple keys separated by newlines; the system verifies all of them and automatically rotates between them when daily rate limits or quotas are reached).*
 
-Check it with `flow_voices`, which reports whether a key is set up. `wb setup` also reports it.
+Check it with `flow_voices`, which reports whether keys are set up. `wb setup` also reports it.
 
 No key and no wish to get one? Flow Studio also has a free local voice (`flow_narrate` with `engine: "kokoro"`, if your version lists it) and system voices (`engine: "mac"`), or use a recording.
+
+## Multiple Models Allowed
+
+Both voice generation and word transcription support selecting from an allowed pool of models:
+
+- **TTS Voice Models**: By default `gemini-2.5-flash-preview-tts` is used. You can override with `--model <model>` in `wb tts` or configure `"tts_model"` in `film.json`. Allowed models in the fallback pool include `gemini-2.5-flash-preview-tts`, `gemini-2.0-flash`, `gemini-1.5-flash`, and `gemini-2.5-pro`. If an individual model is temporarily rate-limited or unavailable, the engine fails over to the next candidate model.
+- **Speech-to-Text Transcription Models**: By default `faster-whisper` uses the `'base'` model. You can specify a different model with `--whisper-model <base|small|medium|large-v3|tiny>` in `wb voice` or in `film.json` (`"whisper_model": "small"`).
 
 ## Recording
 

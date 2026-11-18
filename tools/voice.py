@@ -7,6 +7,12 @@ from common import ffmpeg, load, norm, probe_duration, run, save, die, TOOLS, HO
 
 SR = 48000
 TTS_MODEL = 'gemini-2.5-flash-preview-tts'
+ALLOWED_TTS_MODELS = [
+    'gemini-2.5-flash-preview-tts',
+    'gemini-2.0-flash',
+    'gemini-1.5-flash',
+    'gemini-2.5-pro',
+]
 
 
 def script_words(film):
@@ -49,13 +55,16 @@ def key():
     return ks[0]
 
 
-def tts(film, voice, style=None, text=None, out=None):
-    """Direct call to Google AI Studio, for agents that cannot reach the Flow tools. Splits long scripts by paragraph."""
-    k = key()
-    """Direct call to Google AI Studio, with automatic key rotation across all configured keys."""
+def tts(film, voice, style=None, text=None, out=None, model=None):
+    """Direct call to Google AI Studio, supporting multi-key rotation and multiple allowed model fallbacks."""
     keys = get_keys()
     if not keys:
         die('No Google AI Studio key. See reference/voice.md: the user saves it in Flow Studio (Voice tab), never in the chat.')
+    
+    cfg = load(film / 'film.json', default={}) if isinstance(film, Path) and (film / 'film.json').exists() else {}
+    target_model = model or cfg.get('tts_model') or os.environ.get('GEMINI_TTS_MODEL') or TTS_MODEL
+    candidate_models = [target_model] + [m for m in ALLOWED_TTS_MODELS if m != target_model]
+
     src = text or (film / 'script.md').read_text(encoding='utf-8')
     paras = [p.strip() for p in src.split('\n\n') if p.strip() and not p.strip().startswith('#')]
     chunks, cur = [], ''
@@ -71,38 +80,57 @@ def tts(film, voice, style=None, text=None, out=None):
     vdir.mkdir(exist_ok=True)
     files = []
     active_idx = 0
+    active_model_idx = 0
     for i, c in enumerate(chunks):
         body = {'contents': [{'parts': [{'text': (f'Say {style}: {c}' if style else c)}]}],
                 'generationConfig': {'responseModalities': ['AUDIO'], 'speechConfig': {'voiceConfig': {'prebuiltVoiceConfig': {'voiceName': voice}}}}}
         
         r = None
         last_error = None
-        for attempt in range(len(keys)):
-            cur_idx = (active_idx + attempt) % len(keys)
-            cur_key = keys[cur_idx]
-            req = urllib.request.Request(f'https://generativelanguage.googleapis.com/v1beta/models/{TTS_MODEL}:generateContent',
-                                         data=json.dumps(body).encode(), headers={'content-type': 'application/json', 'x-goog-api-key': cur_key})
-            try:
-                r = json.load(urllib.request.urlopen(req, timeout=300))
-                active_idx = cur_idx
+        for m_attempt in range(len(candidate_models)):
+            cur_model = candidate_models[(active_model_idx + m_attempt) % len(candidate_models)]
+            model_failed = False
+
+            for attempt in range(len(keys)):
+                cur_idx = (active_idx + attempt) % len(keys)
+                cur_key = keys[cur_idx]
+                req = urllib.request.Request(f'https://generativelanguage.googleapis.com/v1beta/models/{cur_model}:generateContent',
+                                             data=json.dumps(body).encode(), headers={'content-type': 'application/json', 'x-goog-api-key': cur_key})
+                try:
+                    r = json.load(urllib.request.urlopen(req, timeout=300))
+                    active_idx = cur_idx
+                    active_model_idx = (active_model_idx + m_attempt) % len(candidate_models)
+                    break
+                except urllib.error.HTTPError as e:
+                    last_error = e
+                    if e.code in (429, 403) and len(keys) > 1:
+                        print(f'AI Studio key ending in ...{cur_key[-4:]} hit quota limit ({e.code}) on model {cur_model}. Trying next key...', file=sys.stderr)
+                        continue
+                    if e.code in (404, 400) and len(candidate_models) > 1:
+                        print(f'Model {cur_model} returned {e.code}. Falling back to alternate model in pool...', file=sys.stderr)
+                        model_failed = True
+                        break
+                    if e.code == 429:
+                        if len(candidate_models) > 1:
+                            print(f'Quota reached on {cur_model}. Falling back to next allowed model...', file=sys.stderr)
+                            model_failed = True
+                            break
+                        die('AI Studio says the free limit for voice takes is used up for now across all keys. It resets daily. Tell the user, and offer: try again later, a free local voice (flow_narrate with engine "kokoro"), or a recording.')
+                    die(f'AI Studio refused this take ({e.code}): {e.read().decode()[:300]}')
+                except Exception as e:
+                    last_error = e
+                    if len(keys) > 1:
+                        print(f'AI Studio key ending in ...{cur_key[-4:]} error: {e}. Switching to next key...', file=sys.stderr)
+                        continue
+                    die(f'Error calling Google AI Studio: {e}')
+
+            if r:
                 break
-            except urllib.error.HTTPError as e:
-                last_error = e
-                if e.code in (429, 403) and len(keys) > 1:
-                    print(f'AI Studio key ending in ...{cur_key[-4:]} hit quota limit ({e.code}). Switching to next key...', file=sys.stderr)
-                    continue
-                if e.code == 429:
-                    die('AI Studio says the free limit for voice takes is used up for now across all keys. It resets daily. Tell the user, and offer: try again later, a free local voice (flow_narrate with engine "kokoro"), or a recording.')
-                die(f'AI Studio refused this take ({e.code}): {e.read().decode()[:300]}')
-            except Exception as e:
-                last_error = e
-                if len(keys) > 1:
-                    print(f'AI Studio key ending in ...{cur_key[-4:]} error: {e}. Switching to next key...', file=sys.stderr)
-                    continue
-                die(f'Error calling Google AI Studio: {e}')
+            if not model_failed:
+                break
 
         if not r:
-            die(f'All {len(keys)} Google AI Studio keys failed or were exhausted. Last error: {last_error}')
+            die(f'All {len(keys)} Google AI Studio keys and allowed models failed. Last error: {last_error}')
 
         part = next(p for p in r['candidates'][0]['content']['parts'] if 'inlineData' in p)
         rate = int((re.search(r'rate=(\d+)', part['inlineData'].get('mimeType', '')) or [0, 24000])[1])
@@ -111,11 +139,11 @@ def tts(film, voice, style=None, text=None, out=None):
             w.setnchannels(1); w.setsampwidth(2); w.setframerate(rate)
             w.writeframes(base64.b64decode(part['inlineData']['data']))
         files.append(f)
-        print(f'  piece {i + 1}/{len(chunks)}: {probe_duration(f):.1f} s')
+        print(f'  piece {i + 1}/{len(chunks)} ({cur_model}): {probe_duration(f):.1f} s')
     return files
 
 
-def lock(film, files, tempo=None, target=None, language=None, words_file=None):
+def lock(film, files, tempo=None, target=None, language=None, words_file=None, whisper_model=None):
     """Join the takes into voice/narration.wav, apply any speed change, and time every word."""
     vdir = film / 'voice'
     vdir.mkdir(exist_ok=True)
@@ -146,28 +174,31 @@ def lock(film, files, tempo=None, target=None, language=None, words_file=None):
         ffmpeg('-i', tmp, '-c:a', 'pcm_s16le', out)
     tmp.unlink()
     print(f'narration {probe_duration(out):.2f} s -> {out}')
-    clock(film, language, words_file)
+    clock(film, language, words_file, whisper_model=whisper_model)
     pace(film)
 
 
-def transcribe(path, language):
+def transcribe(path, language, whisper_model=None):
+    import os
     from faster_whisper import WhisperModel
-    print('timing every word (the first run downloads a speech model, about 150 MB)...', flush=True)
-    model = WhisperModel('base', device='cpu', compute_type='int8', download_root=str(TOOLS / 'models'))
+    m = whisper_model or os.environ.get('WHISPER_MODEL', 'base')
+    print(f'timing every word (using speech model: {m})...', flush=True)
+    model = WhisperModel(m, device='cpu', compute_type='int8', download_root=str(TOOLS / 'models'))
     r = run(['ffmpeg', '-v', 'error', '-i', path, '-f', 'f32le', '-ac', '1', '-ar', '16000', '-'], capture_output=True)
     audio = np.frombuffer(r.stdout, np.float32).copy()                  # decoded here so nothing depends on the av package
     segs, _ = model.transcribe(audio, word_timestamps=True, language=language, vad_filter=False)
     return [{'w': w.word.strip(), 's': round(w.start, 3), 'e': round(w.end, 3)} for s in segs for w in s.words if w.word.strip()]
 
 
-def clock(film, language=None, words_file=None):
+def clock(film, language=None, words_file=None, whisper_model=None):
     vdir = film / 'voice'
     if words_file:                                                      # e.g. saved from the Flow transcribe tool
         raw = load(words_file)
         raw = raw.get('words', raw) if isinstance(raw, dict) else raw
         W = [{'w': str(x.get('w', x.get('word', x.get('text')))).strip(), 's': float(x.get('s', x.get('start'))), 'e': float(x.get('e', x.get('end')))} for x in raw]
     else:
-        W = transcribe(vdir / 'narration.wav', language or load(film / 'film.json').get('language'))
+        wmodel = whisper_model or load(film / 'film.json', default={}).get('whisper_model')
+        W = transcribe(vdir / 'narration.wav', language or load(film / 'film.json').get('language'), whisper_model=wmodel)
     # the script knows the spelling: fix mishearings so scene.js can use the real words
     sw = script_words(film)
     if sw:

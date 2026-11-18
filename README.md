@@ -11,10 +11,10 @@ Give your AI coding agent a topic and get a fully animated, RSA-style whiteboard
 ## 🌟 Key Capabilities
 
 - 🖋️ **Realistic Hand Drawing Engine**: Stroke-by-stroke vector path animation with natural hand motion and realistic ink drawing dynamics.
-- ⏱️ **Word-Clock Audio Sync**: Speech transcribed and timed to the exact syllable with `faster-whisper`. Illustrations appear precisely when the relevant concepts are spoken.
+- ⏱️ **Word-Clock Audio Sync & Speech Models**: Speech transcribed and timed to the exact syllable with `faster-whisper`. Supports multiple Whisper model sizes (`base`, `small`, `medium`, `large-v3`, `tiny`).
 - 🔊 **Procedural Audio & Marker Squeaks**: Physically modeled dry-erase marker stick-slip squeaks, felt friction, adaptive speech ducking, and harmonic ambient music beds.
-- 🎨 **Zero-Cost Google Flow Studio Integration**: Drives Google Flow directly via Model Context Protocol (MCP) to generate high-quality sketch stills at 0 credit cost.
-- 🎙️ **Expressive Gemini TTS Voices**: Connects to Google AI Studio's prebuilt studio narration voices (`Charon`, `Puck`, `Fenrir`, `Kore`, `Aoede`) with automated multi-key failover and quota management.
+- 🎨 **Bundled Flow Studio MCP**: Includes the complete, updated Google Flow MCP companion with multi-server parallel generation (`Flow Studio - New Window.cmd`) and multi-key pooling.
+- 🎙️ **Multi-Model Gemini TTS with Key Rotation**: Generates human-like voice narration across multiple allowed models (`gemini-2.5-flash-preview-tts`, `gemini-2.0-flash`, `gemini-1.5-flash`, `gemini-2.5-pro`) with automated multi-key pool failover and quota management.
 - 🤖 **Cross-Agent Compatible**: Built to open agent skill standards—plugs into **Claude Code**, **Antigravity**, **OpenAI Codex**, **Cursor**, **OpenCode**, and **Gemini CLI**.
 - 🖥️ **Full Cross-Platform Support**: Tested and running on Windows (PowerShell/CMD), macOS, and Linux.
 
@@ -82,8 +82,8 @@ The `wb` command-line utility orchestrates the entire skill workspace (default `
 | `wb hand <image> [--tip x,y]` | Generates a custom hand silhouette and pen tip calibration |
 | `wb art <film> [name ...]` | Traces raster drawings into vector pen stroke paths |
 | `wb labels <film>` | Renders and traces text labels into handwritten vector strokes |
-| `wb tts <film> --voice <name>` | Generates voice narration directly via Google AI Studio API |
-| `wb voice <film> <audio.wav>` | Transcribes audio and locks word timestamps with `faster-whisper` |
+| `wb tts <film> --voice <name> [--model <model>]` | Generates voice narration via Google AI Studio API with model and key auto-failover |
+| `wb voice <film> <audio.wav> [--whisper-model <m>]` | Transcribes audio and locks word timestamps with `faster-whisper` (`base`, `small`, `medium`, `large-v3`) |
 | `wb check <film>` | Validates pen speeds, layout boundaries, cut edges, and collisions |
 | `wb sheet <film>` | Generates visual contact sheets for quick storyboard review |
 | `wb preview <film>` | Compiles a quick low-resolution draft with audio |
@@ -100,14 +100,18 @@ Whiteboard-Skill/
 ├── INSTALL.md            # Comprehensive OS & agent setup instructions
 ├── AGENTS.md             # Pointer instruction for multi-agent frameworks
 ├── .gitignore            # Clean git exclusion rules
+├── flow-mcp/             # Bundled Flow Studio MCP server & multi-instance UI
+│   ├── src/              # MCP core, Gemini TTS rotator & server orchestration
+│   ├── studio/           # Web UI companion with key pool & parallel launcher
+│   └── Flow Studio*.cmd  # Windows one-click and multi-instance launchers
 ├── scripts/
 │   ├── install.py        # Global cross-agent installer script
 │   ├── wb                # Unix CLI runner script
 │   └── wb.cmd            # Windows CMD/PowerShell runner script
 ├── tools/
-│   ├── wb.py             # CLI command dispatcher
+│   ├── wb.py             # CLI command dispatcher with multi-model flags
 │   ├── setup.py          # Dependency checker & automatic installer
-│   ├── voice.py          # TTS generator & faster-whisper word timer
+│   ├── voice.py          # Multi-model TTS generator & Whisper word timer
 │   ├── strokes.py        # Raster-to-vector ink path tracer
 │   ├── render.py         # Headless Playwright/Chrome frame capture & video encoder
 │   ├── mix.py            # Procedural marker squeaks, Foley & audio mixer

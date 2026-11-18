@@ -57,11 +57,7 @@ If the user says a scene is too complicated, simplify it. Wait for approval; it 
 
 ## Step 4: voice, then lock it ✋
 
-Record the voice the user picked at kickoff (`reference/voice.md`): `flow_narrate` with `engine: "gemini"`, or their own recording, or
-any other tool's file. **Flow can silently fall back to a different voice, so compare the voice in its reply with the one requested, and use
-the `output` path it returns.** Then `wb voice <film> <audio file>`, which times every word. Tell them where the file is, ask them to listen,
-and take notes such as "pacing is too slow, target 30 seconds". Regenerate until they approve. From here on the words are locked, because
-changing them means re-timing. Tell the user that small speed changes and pauses may still be made once the drawings show how much time the pen needs.
+Record the voice the user picked at kickoff (`reference/voice.md`): `flow_narrate` with `engine: "gemini"`, or direct TTS with `wb tts <film> --voice <voice> [--model <model>]` (which supports multiple allowed Gemini models and auto-rotating keys), or their own recording, or any other tool's file. **Flow can silently fall back to a different voice, so compare the voice in its reply with the one requested, and use the `output` path it returns.** Then `wb voice <film> <audio file> [--whisper-model <model>]`, which times every word. Tell them where the file is, ask them to listen, and take notes such as "pacing is too slow, target 30 seconds". Regenerate until they approve. From here on the words are locked, because changing them means re-timing. Tell the user that small speed changes and pauses may still be made once the drawings show how much time the pen needs.
 
 ## Step 5: images
 

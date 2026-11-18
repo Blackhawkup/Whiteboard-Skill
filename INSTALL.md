@@ -11,9 +11,10 @@ This guide walks you through installing and configuring the **Whiteboard Explain
 3. [Agent Configuration Details](#3-agent-configuration-details)
 4. [Setting Up Google Flow Studio (MCP Server)](#4-setting-up-google-flow-studio-mcp-server)
 5. [Setting Up Voice Narration (Gemini TTS)](#5-setting-up-voice-narration-gemini-tts)
-6. [Verifying Your Setup](#6-verifying-your-setup)
-7. [Manual / Offline Mode (No Flow Tools)](#7-manual--offline-mode-no-flow-tools)
-8. [Troubleshooting & Common Issues](#8-troubleshooting--common-issues)
+6. [Multi-Model Configuration](#6-multi-model-configuration)
+7. [Verifying Your Setup](#7-verifying-your-setup)
+8. [Manual / Offline Mode (No Flow Tools)](#8-manual--offline-mode-no-flow-tools)
+9. [Troubleshooting & Common Issues](#9-troubleshooting--common-issues)
 
 ---
 
@@ -185,16 +186,81 @@ Export `GEMINI_API_KEY` in your shell profile (`.bashrc`, `.zshrc`, or Windows E
 export GEMINI_API_KEY="YOUR_GEMINI_API_KEY"
 ```
 
-#### Option C: Multi-Key Rotation (For High Volume / Rate-Limit Protection)
-To avoid hitting free-tier 429 rate limits during rapid revisions, you can provide multiple keys separated by commas:
-```bash
-export GEMINI_API_KEYS="KEY_1,KEY_2,KEY_3"
-```
-The whiteboard engine automatically detects and rotates to the next available key if a quota limit or temporary error occurs.
+#### Option C: Multi-Key Rotation Pool (Automatic Failover)
+To avoid hitting free-tier 429 rate limits or quota exhaustion during production runs, you can supply as many keys as you want:
+- **In Flow Studio Web UI:** Paste multiple keys into the Voice tab textarea (one per line). Click **Save & Verify Keys**.
+- **In Environment:** Set `GEMINI_API_KEYS="KEY_1,KEY_2,KEY_3"` (comma or newline separated).
+- **In Key File:** Put one key per line in `~/.flow-mcp/gemini-key`.
+
+The engine automatically tests each key, tracks the active key index, and instantly fails over to the next key if a 429 quota limit or 403 error is encountered.
 
 ---
 
-## 6. Verifying Your Setup
+## 6. Multi-Model Configuration
+
+The pipeline supports selecting and auto-failing over across multiple AI models:
+
+### 6.1. Multiple Gemini TTS Voice Models
+You are not locked into a single TTS model. The allowed model pool includes:
+- `gemini-2.5-flash-preview-tts` (Default ultra-realistic narration)
+- `gemini-2.0-flash`
+- `gemini-1.5-flash`
+- `gemini-2.5-pro`
+
+**Ways to configure or override the TTS model:**
+1. **Via CLI argument:**
+   ```bash
+   wb tts <film> --voice Charon --model gemini-2.0-flash
+   ```
+2. **Via `film.json`:**
+   ```json
+   {
+     "tts_model": "gemini-2.5-flash-preview-tts"
+   }
+   ```
+3. **Via Environment Variable:**
+   ```bash
+   export GEMINI_TTS_MODEL="gemini-2.0-flash"
+   ```
+*If a model returns a 404, 400, or model-level quota limit, the engine automatically tries the next model in the allowed model pool.*
+
+### 6.2. Multiple Faster-Whisper Speech-to-Text Models
+Word timing and synchronisation uses `faster-whisper`. You can select the model based on your speed vs. accuracy requirements:
+- `base` (Default: ~150 MB, fast and accurate for English)
+- `small` (~460 MB, higher accuracy for multi-speaker or noisy audio)
+- `medium` (~1.5 GB, high-fidelity multilingual)
+- `large-v3` (~3 GB, studio-grade transcription)
+- `tiny` (~75 MB, ultra-fast low-resource)
+
+**Ways to configure the Whisper model:**
+1. **Via CLI argument:**
+   ```bash
+   wb voice <film> narration.wav --whisper-model small
+   # or with tts:
+   wb tts <film> --voice Charon --whisper-model small
+   ```
+2. **Via `film.json`:**
+   ```json
+   {
+     "whisper_model": "small"
+   }
+   ```
+3. **Via Environment Variable:**
+   ```bash
+   export WHISPER_MODEL="small"
+   ```
+
+### 6.3. Parallel Server Instances (Side-by-Side Video Generation)
+If you are generating multiple videos simultaneously, you can run multiple independent Flow Studio instances on separate ports:
+- **On Windows:** Double-click `flow-mcp\Flow Studio - New Window.cmd`
+- **In Terminal:** Run `npm run studio:new` inside `~/flow-mcp` (or `node dist/studio.js --new`)
+- **From Studio Web UI:** Click the **"+ New Studio Window (Parallel Server)"** button in the header.
+
+Each instance finds an available port (`8788`, `8789`, etc.) and runs independently without collision.
+
+---
+
+## 7. Verifying Your Setup
 
 To verify that your installation, dependencies, and rendering pipeline are functioning properly:
 
@@ -223,7 +289,7 @@ To verify that your installation, dependencies, and rendering pipeline are funct
 
 ---
 
-## 7. Manual / Offline Mode (No Flow Tools)
+## 8. Manual / Offline Mode (No Flow Tools)
 
 If you are using an agent that does not support Model Context Protocol (MCP) or if you want to operate without the Flow Studio browser window:
 
@@ -244,7 +310,7 @@ If you are using an agent that does not support Model Context Protocol (MCP) or 
 
 ---
 
-## 8. Troubleshooting & Common Issues
+## 9. Troubleshooting & Common Issues
 
 | Issue / Error | Cause | Solution |
 |---|---|---|

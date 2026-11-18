@@ -178,7 +178,12 @@ def setup_flow(install):
         good(f'Flow Studio ({FLOW_DIR})')
     elif install:
         print('  ...   installing Flow Studio (flow-mcp)')
-        if not (FLOW_DIR / 'package.json').exists() and not sh(['git', 'clone', '--depth', '1', FLOW_REPO, str(FLOW_DIR)]):
+        bundled = SKILL / 'flow-mcp'
+        if bundled.exists() and not (FLOW_DIR / 'package.json').exists():
+            print(f'  ...   using bundled Flow Studio from {bundled}')
+            FLOW_DIR.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copytree(bundled, FLOW_DIR, ignore=shutil.ignore_patterns('dist', 'node_modules', '.git'))
+        elif not (FLOW_DIR / 'package.json').exists() and not sh(['git', 'clone', '--depth', '1', FLOW_REPO, str(FLOW_DIR)]):
             need('Flow Studio', f'git clone {FLOW_REPO} {FLOW_DIR}')
             return None
         npm = shutil.which('npm') or 'npm'

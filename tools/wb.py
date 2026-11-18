@@ -112,15 +112,19 @@ def main():
         build.labels(film_dir(a.film))
     elif cmd == 'tts':
         ap.add_argument('film'); ap.add_argument('--voice', required=True); ap.add_argument('--style'); ap.add_argument('--tempo', type=float); ap.add_argument('--target', type=float)
+        ap.add_argument('--model', help='Gemini TTS model override (e.g. gemini-2.5-flash-preview-tts, gemini-2.0-flash)')
+        ap.add_argument('--whisper-model', help='Whisper model (e.g. base, small, medium, large-v3)')
         a = ap.parse_args(rest)
         import voice
         f = film_dir(a.film)
-        voice.lock(f, voice.tts(f, a.voice, a.style), a.tempo, a.target)
+        voice.lock(f, voice.tts(f, a.voice, a.style, model=a.model), a.tempo, a.target, whisper_model=a.whisper_model)
     elif cmd == 'voice':
         ap.add_argument('film'); ap.add_argument('audio', nargs='+'); ap.add_argument('--tempo', type=float); ap.add_argument('--target', type=float)
-        ap.add_argument('--words'); ap.add_argument('--language'); a = ap.parse_args(rest)
+        ap.add_argument('--words'); ap.add_argument('--language')
+        ap.add_argument('--whisper-model', help='Whisper model (e.g. base, small, medium, large-v3)')
+        a = ap.parse_args(rest)
         import voice
-        voice.lock(film_dir(a.film), [Path(x).expanduser() for x in a.audio], a.tempo, a.target, a.language, a.words)
+        voice.lock(film_dir(a.film), [Path(x).expanduser() for x in a.audio], a.tempo, a.target, a.language, a.words, whisper_model=a.whisper_model)
     elif cmd == 'pace':
         ap.add_argument('film'); a = ap.parse_args(rest)
         import voice
